@@ -1,6 +1,6 @@
 'use client';
 
-import type { CSSProperties, ReactNode } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 import { Info } from 'lucide-react';
 
 import {
@@ -25,16 +25,34 @@ export default function MetricCard({
   onOpenInfo,
   value,
 }: MetricCardProps) {
+  const [rawValue, setRawValue] = useState<number | null>(null);
   const resolvedValue = value ?? 0;
-  const ratio = resolvedValue / 10;
+  const displayValue = rawValue ?? resolvedValue;
+  const ratio = displayValue / 10;
+  const colorBaseValue =
+    value === null && rawValue === null ? 0 : Math.round(displayValue);
   const fillColor =
-    value === null ? '#CBD5E1' : toScoreColor(resolvedValue, 0, 10);
+    value === null && rawValue === null
+      ? '#CBD5E1'
+      : toScoreColor(colorBaseValue, 0, 10);
   const descriptorText = getDescriptorText(descriptor, value);
   const descriptorToneColor = getDescriptorToneColor(resolvedValue);
   const sliderStyle = {
     '--slider-percent': `${ratio * 100}%`,
     '--slider-fill': fillColor,
   } as CSSProperties;
+
+  const handleSliderChange = (raw: number) => {
+    setRawValue(raw);
+    const rounded = Math.round(raw);
+    if (rounded !== value) {
+      onChange(rounded);
+    }
+  };
+
+  const endDrag = () => {
+    setRawValue(null);
+  };
 
   return (
     <article className="metric-card">
@@ -65,21 +83,22 @@ export default function MetricCard({
         <div className="metric-slider-shell" style={sliderStyle}>
           <div aria-hidden className="metric-slider-visual">
             <div className="metric-slider-fill" />
-            <div
-              className="metric-slider-thumb"
-              style={{ borderColor: fillColor }}
-            >
-              {value === null ? '–' : value}
-            </div>
           </div>
           <input
             aria-label={descriptor.label}
             className="metric-slider-input"
             max={10}
             min={0}
-            onChange={(event) => onChange(Number(event.target.value))}
+            step="any"
+            onChange={(event) => handleSliderChange(Number(event.target.value))}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            onTouchEnd={endDrag}
+            onMouseUp={endDrag}
+            onBlur={endDrag}
+            onKeyUp={endDrag}
             type="range"
-            value={resolvedValue}
+            value={displayValue}
           />
         </div>
         <div className="metric-slider-scale">

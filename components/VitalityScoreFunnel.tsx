@@ -23,6 +23,7 @@ export default function VitalityScoreFunnel() {
   const [categoryIndex, setCategoryIndex] = useState(0);
   const [scores, setScores] = useState<ScoreMap>(buildEmptyScores);
   const [email, setEmail] = useState('');
+  const [consent, setConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<LeadSubmissionResponse | null>(null);
@@ -86,11 +87,17 @@ export default function VitalityScoreFunnel() {
       setError('Enter your email address.');
       return;
     }
+    if (!consent) {
+      setError('Please confirm consent before submitting your score.');
+      return;
+    }
 
     try {
       setSubmitting(true);
       setError(null);
-      const response = await submitVitalityLead(email.trim(), scores);
+      const response = await submitVitalityLead(email.trim(), scores, {
+        consent: true,
+      });
       setResult(response);
       setStage('result');
     } catch (submissionError) {
@@ -208,6 +215,32 @@ export default function VitalityScoreFunnel() {
                 </div>
               </label>
 
+              <label className="consent-field">
+                <input
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(event) => {
+                    setConsent(event.target.checked);
+                    if (event.target.checked) setError(null);
+                  }}
+                />
+                <span>
+                  I consent to T-Shots collecting my Vitality Score quiz
+                  answers and email address to generate and email me a
+                  personalized result, and to save it so it can be linked if I
+                  later create a T-Shots account with this same email. I can
+                  withdraw consent and request deletion at any time. See the{' '}
+                  <a href="/privacy" target="_blank" rel="noreferrer">
+                    Consumer Health Data Privacy Notice
+                  </a>{' '}
+                  and{' '}
+                  <a href="/terms" target="_blank" rel="noreferrer">
+                    Terms of Use
+                  </a>
+                  .
+                </span>
+              </label>
+
               {error ? <p className="error-text">{error}</p> : null}
 
               <div className="quiz-footer">
@@ -220,7 +253,7 @@ export default function VitalityScoreFunnel() {
                 </button>
                 <button
                   className="primary-button"
-                  disabled={submitting}
+                  disabled={submitting || !consent}
                   onClick={handleSubmit}
                   type="button"
                 >
@@ -258,6 +291,7 @@ export default function VitalityScoreFunnel() {
                 onClick={() => {
                   setScores(buildEmptyScores());
                   setEmail('');
+                  setConsent(false);
                   setResult(null);
                   setStage('landing');
                   setCategoryIndex(0);
@@ -273,6 +307,12 @@ export default function VitalityScoreFunnel() {
       ) : null}
 
       <InfoDialog metric={activeMetric} onClose={() => setActiveMetric(null)} />
+
+      <footer className="site-footer">
+        <span>© {new Date().getFullYear()} T-Shots</span>
+        <a href="/privacy">Privacy &amp; Consumer Health Data Notice</a>
+        <a href="/terms">Terms of Use</a>
+      </footer>
     </main>
   );
 }
