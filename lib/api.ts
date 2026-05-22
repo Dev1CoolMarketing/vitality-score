@@ -13,6 +13,13 @@ export type LeadSubmissionResponse = {
   createdAt: string;
 };
 
+export type SubmitVitalityLeadOptions = {
+  consent: boolean;
+  consentVersion?: string;
+};
+
+const CONSENT_VERSION = 'v1';
+
 const resolveBaseUrl = () =>
   normalizeApiBaseUrl(process.env.NEXT_PUBLIC_RAYHAWK_API_URL) ||
   'http://localhost:8080/v1';
@@ -29,9 +36,12 @@ const normalizeApiBaseUrl = (value: string | undefined) => {
 export async function submitVitalityLead(
   email: string,
   scores: ScoreMap,
+  options: SubmitVitalityLeadOptions,
 ): Promise<LeadSubmissionResponse> {
   const payload = {
     email,
+    consent: options.consent,
+    consentVersion: options.consentVersion ?? CONSENT_VERSION,
     erectionStrength: scores.erectionStrength,
     morningErections: scores.morningErections,
     libido: scores.libido,

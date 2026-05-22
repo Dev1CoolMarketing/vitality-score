@@ -49,5 +49,7 @@ Rayhawk will prefer Resend when those env vars are present. Gmail remains as a f
 
 When configured, each completed vitality-score submission will:
 
-1. email the user their saved score plus T-Shots web/app CTA links
-2. optionally send an internal notification copy
+1. email the user their saved score plus a primary CTA to `${TSHOTS_WEBSITE_URL}/get-app`
+2. include a secondary web fallback to `TSHOTS_WEBSITE_URL`
+3. optionally include a direct App Store CTA when `TSHOTS_APP_STORE_URL` is set
+4. optionally send an internal notification copy
