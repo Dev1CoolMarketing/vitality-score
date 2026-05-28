@@ -11,6 +11,10 @@ export type LeadSubmissionResponse = {
     color: string;
   };
   createdAt: string;
+  emailDelivery: {
+    success: boolean;
+    errorMessage: string | null;
+  };
 };
 
 export type SubmitVitalityLeadOptions = {

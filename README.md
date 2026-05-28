@@ -29,6 +29,11 @@ npm run dev
 - Example: `http://localhost:8080`
 - The app will automatically append `/v1` if you provide only the host root.
 
+`NEXT_PUBLIC_TSHOTS_WEB_URL` optional
+
+- Example: `https://t-shots.com`
+- Used for the desktop sign-in button on the Vitality Score site.
+
 The funnel posts completed vitality assessments to `POST /v1/vitality-score-leads`.
 
 ## Email delivery

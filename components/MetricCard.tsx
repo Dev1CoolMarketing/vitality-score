@@ -1,12 +1,19 @@
 'use client';
 
-import { useState, type CSSProperties, type ReactNode } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 import { Info } from 'lucide-react';
 
 import {
   getDescriptorText,
   type MetricDefinition,
 } from '@/lib/vitality-model';
+import { getStableRoundedSliderValue } from '@/lib/discrete-slider';
 
 type MetricCardProps = {
   accentColor: string;
@@ -26,31 +33,52 @@ export default function MetricCard({
   value,
 }: MetricCardProps) {
   const [rawValue, setRawValue] = useState<number | null>(null);
+  const [displayInteger, setDisplayInteger] = useState<number | null>(value);
+  const isDraggingRef = useRef(false);
+  const roundedValueRef = useRef(value ?? 0);
   const resolvedValue = value ?? 0;
-  const displayValue = rawValue ?? resolvedValue;
-  const ratio = displayValue / 10;
+  const activeRawValue = rawValue ?? resolvedValue;
+  const roundedActiveValue = displayInteger ?? value ?? 0;
+  const ratio = activeRawValue / 10;
   const colorBaseValue =
-    value === null && rawValue === null ? 0 : Math.round(displayValue);
+    value === null && displayInteger === null ? 0 : roundedActiveValue;
   const fillColor =
-    value === null && rawValue === null
+    value === null && displayInteger === null
       ? '#CBD5E1'
       : toScoreColor(colorBaseValue, 0, 10);
-  const descriptorText = getDescriptorText(descriptor, value);
-  const descriptorToneColor = getDescriptorToneColor(resolvedValue);
+  const descriptorValue =
+    value === null && displayInteger === null ? null : roundedActiveValue;
+  const descriptorText = getDescriptorText(descriptor, descriptorValue);
+  const descriptorToneColor = getDescriptorToneColor(roundedActiveValue);
   const sliderStyle = {
     '--slider-percent': `${ratio * 100}%`,
     '--slider-fill': fillColor,
   } as CSSProperties;
 
+  useEffect(() => {
+    if (isDraggingRef.current) return;
+    roundedValueRef.current = value ?? 0;
+    setDisplayInteger(value);
+  }, [value]);
+
   const handleSliderChange = (raw: number) => {
+    isDraggingRef.current = true;
     setRawValue(raw);
-    const rounded = Math.round(raw);
-    if (rounded !== value) {
+    const rounded = getStableRoundedSliderValue({
+      rawValue: raw,
+      lastRoundedValue: roundedValueRef.current,
+      min: 0,
+      max: 10,
+    });
+    if (rounded !== roundedValueRef.current) {
+      roundedValueRef.current = rounded;
+      setDisplayInteger(rounded);
       onChange(rounded);
     }
   };
 
   const endDrag = () => {
+    isDraggingRef.current = false;
     setRawValue(null);
   };
 
@@ -75,7 +103,9 @@ export default function MetricCard({
             backgroundColor: value === null ? '#F8FAFC' : accentTint,
           }}
         >
-          {value === null ? 'Not set' : `${value}/10`}
+          {value === null && displayInteger === null
+            ? 'Not set'
+            : `${roundedActiveValue}/10`}
         </span>
       </div>
 
@@ -98,7 +128,7 @@ export default function MetricCard({
             onBlur={endDrag}
             onKeyUp={endDrag}
             type="range"
-            value={displayValue}
+            value={activeRawValue}
           />
         </div>
         <div className="metric-slider-scale">
