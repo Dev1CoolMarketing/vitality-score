@@ -1,5 +1,6 @@
-import Link from 'next/link';
 import type { Metadata } from 'next';
+
+import LegalDocument from '@/components/LegalDocument';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy | Vitality Score',
@@ -9,22 +10,48 @@ export const metadata: Metadata = {
 
 const LAST_UPDATED = 'May 14, 2026';
 
+const FACTS = [
+  {
+    label: 'Covers',
+    value:
+      'Vitality Score quiz answers, computed scores, consent records, and the email you submit.',
+  },
+  {
+    label: 'Retention',
+    value:
+      'Lead records are deleted within 30 days unless later linked to a T-Shots account.',
+  },
+  {
+    label: 'Your rights',
+    value:
+      'Access, deletion, withdrawal of consent, appeals, and non-discrimination protections.',
+  },
+];
+
+const TABLE_OF_CONTENTS = [
+  { href: '#chd-notice', label: 'Health data notice' },
+  { href: '#policy', label: 'General privacy' },
+  { href: '#rights', label: 'Your rights' },
+  { href: '#contact', label: 'Contact' },
+];
+
+const FOOTER_LINKS = [
+  { href: '/', label: 'Return to Vitality Score' },
+  { href: '/terms', label: 'Terms of Use' },
+];
+
 export default function PrivacyPage() {
   return (
-    <main className="legal-shell">
-      <article className="legal-article">
-        <header className="legal-header">
-          <p className="legal-eyebrow">Vitality Score</p>
-          <h1>Privacy Policy &amp; Consumer Health Data Privacy Notice</h1>
-          <p className="legal-meta">Last updated: {LAST_UPDATED}</p>
-          <nav className="legal-toc" aria-label="Table of contents">
-            <a href="#chd-notice">Consumer Health Data Privacy Notice</a>
-            <a href="#policy">General Privacy Policy</a>
-            <a href="#rights">Your Rights</a>
-            <a href="#contact">Contact</a>
-          </nav>
-        </header>
-
+    <LegalDocument
+      accent="privacy"
+      description="How T-Shots collects, uses, stores, and deletes information submitted through the Vitality Score quiz, including our Washington consumer health data notice."
+      eyebrow="Vitality Score privacy"
+      facts={FACTS}
+      footerLinks={FOOTER_LINKS}
+      lastUpdated={LAST_UPDATED}
+      title="Privacy Policy & Consumer Health Data Privacy Notice"
+      toc={TABLE_OF_CONTENTS}
+    >
         <section id="chd-notice" className="legal-section legal-section--featured">
           <h2>Consumer Health Data Privacy Notice</h2>
           <p>
@@ -280,12 +307,6 @@ export default function PrivacyPage() {
             <a href="mailto:team@drvigor.com">team@drvigor.com</a>
           </p>
         </section>
-
-        <footer className="legal-footer">
-          <Link href="/">Return to Vitality Score</Link>
-          <Link href="/terms">Terms of Use</Link>
-        </footer>
-      </article>
-    </main>
+    </LegalDocument>
   );
 }

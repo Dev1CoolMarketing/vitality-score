@@ -1,10 +1,12 @@
 'use client';
 
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { ArrowRight, Mail } from 'lucide-react';
 
 import InfoDialog from '@/components/InfoDialog';
 import MetricCard from '@/components/MetricCard';
+import PhoneShowcase from '@/components/PhoneShowcase';
 import { submitVitalityLead, type LeadSubmissionResponse } from '@/lib/api';
 import {
   buildEmptyScores,
@@ -19,6 +21,7 @@ import {
 type FunnelStage = 'landing' | 'assessment' | 'capture' | 'result';
 
 export default function VitalityScoreFunnel() {
+  const supportEmail = 'support@t-shots.com';
   const [stage, setStage] = useState<FunnelStage>('landing');
   const [categoryIndex, setCategoryIndex] = useState(0);
   const [scores, setScores] = useState<ScoreMap>(buildEmptyScores);
@@ -103,8 +106,8 @@ export default function VitalityScoreFunnel() {
     } catch (submissionError) {
       setError(
         submissionError instanceof Error
-          ? submissionError.message
-          : 'Unable to save your score right now.',
+          ? `${submissionError.message} If this continues, please contact ${supportEmail}.`
+          : `Unable to save your score right now. If this continues, please contact ${supportEmail}.`,
       );
     } finally {
       setSubmitting(false);
@@ -113,32 +116,54 @@ export default function VitalityScoreFunnel() {
 
   return (
     <main className="page-shell">
+      <header className="site-header" aria-label="Vitality Score">
+        <a className="site-header-brand" href="/">
+          <span className="site-header-monogram" aria-hidden>
+            VS
+          </span>
+          <span className="brand-wordmark">
+            <span className="brand-wordmark-text">Vitality Score</span>
+            <span className="brand-wordmark-tm" aria-hidden>
+              &trade;
+            </span>
+          </span>
+        </a>
+        <span className="site-header-tag">A T-Shots self-assessment</span>
+      </header>
+
       {stage === 'landing' ? (
         <section className="hero-panel">
-          <div className="hero-copy">
-            <p className="stage-eyebrow">T-Shots vitality assessment</p>
-            <h1>Vitality Score™</h1>
-            <p className="hero-body">
-              Learn about your Vitality Score with a guided vitality quiz across
-              sexual health, mental vitality, and physical recovery. It uses the
-              same vitality rubric language as T-Shots and builds a score out of
-              100.
-            </p>
-            <button
-              className="primary-button hero-button"
-              onClick={handleStart}
-              type="button"
-            >
-              Get your score
-              <ArrowRight size={18} />
-            </button>
+          <div className="hero-copy fade-up-panel" key="landing-panel">
+            <div className="hero-copy-block hero-copy-block-solo">
+              <h1 className="hero-title">
+                <span className="hero-title-text">Vitality Score</span>
+                <span className="hero-title-mark">&trade;</span>
+              </h1>
+              <p className="hero-body">
+                Learn about your Vitality Score with a guided vitality quiz
+                across sexual health, mental vitality, and physical recovery.
+                It uses the same vitality rubric language as T-Shots and
+                builds a score out of 100.
+              </p>
+              <button
+                className="primary-button hero-button"
+                onClick={handleStart}
+                type="button"
+              >
+                Get Your Score
+                <ArrowRight size={18} />
+              </button>
+            </div>
           </div>
         </section>
       ) : null}
 
       {stage === 'assessment' ? (
         <section className="center-stage">
-          <div className="quiz-card">
+          <div
+            className="quiz-card fade-up-panel"
+            key={`assessment-${category.id}-${categoryIndex}`}
+          >
             <div className="quiz-header">
               <p className="stage-eyebrow">
                 Step {categoryIndex + 1} of {categories.length}
@@ -191,75 +216,78 @@ export default function VitalityScoreFunnel() {
 
       {stage === 'capture' ? (
         <section className="center-stage">
-          <div className="stage-card capture-card">
-            <div className="capture-content">
-              <p className="stage-eyebrow">Final step</p>
-              <h2>Want to know your Vitality Score?</h2>
-              <p className="stage-body">
-                Enter your email and we&apos;ll send your Vitality Score plus
-                your slider answers, then save it so T-Shots can link it if you
-                later create a brand-new account with this same address.
-              </p>
+          <div className="stage-card capture-card fade-up-panel" key="capture-panel">
+            <div className="capture-layout">
+              <div className="capture-content">
+                <p className="stage-eyebrow">Final step</p>
+                <h2>Enter your email to get the app link</h2>
+                <p className="stage-body">
+                  We&apos;ll send you the T-Shots app link and save this
+                  Vitality Score. When you register in the app, use this same
+                  email address so we can connect your score automatically.
+                </p>
 
-              <label className="email-field">
-                <span>Email address</span>
-                <div className="email-input-shell">
-                  <Mail size={18} />
+                <label className="email-field">
+                  <span>Email address</span>
+                  <div className="email-input-shell">
+                    <Mail size={18} />
+                    <input
+                      autoComplete="email"
+                      onChange={(event) => setEmail(event.target.value)}
+                      placeholder="you@example.com"
+                      type="email"
+                      value={email}
+                    />
+                  </div>
+                </label>
+
+                <label className="consent-field">
                   <input
-                    autoComplete="email"
-                    onChange={(event) => setEmail(event.target.value)}
-                    placeholder="you@example.com"
-                    type="email"
-                    value={email}
+                    type="checkbox"
+                    checked={consent}
+                    onChange={(event) => {
+                      setConsent(event.target.checked);
+                      if (event.target.checked) setError(null);
+                    }}
+                  />
+                  <span>
+                    I consent to T-Shots collecting my Vitality Score quiz
+                    answers and email address to generate and email me a
+                    personalized result, and to save it so it can be linked if I
+                    later create a T-Shots account with this same email. I can
+                    withdraw consent and request deletion at any time. See the{' '}
+                    <a href="/privacy" target="_blank" rel="noreferrer">
+                      Consumer Health Data Privacy Notice
+                    </a>{' '}
+                    and{' '}
+                    <a href="/terms" target="_blank" rel="noreferrer">
+                      Terms of Use
+                    </a>
+                    .
+                  </span>
+                </label>
+
+                {error ? <p className="error-text">{error}</p> : null}
+
+                <div className="quiz-footer">
+                  <button
+                    className="primary-button"
+                    disabled={submitting || !consent}
+                    onClick={handleSubmit}
+                    type="button"
+                  >
+                    {submitting ? 'Saving...' : 'Get My Score!'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="capture-media-block">
+                <div className="capture-phone-shell">
+                  <PhoneShowcase
+                    className="phone-showcase-capture"
+                    sizes="(max-width: 720px) 210px, (max-width: 1080px) 240px, 260px"
                   />
                 </div>
-              </label>
-
-              <label className="consent-field">
-                <input
-                  type="checkbox"
-                  checked={consent}
-                  onChange={(event) => {
-                    setConsent(event.target.checked);
-                    if (event.target.checked) setError(null);
-                  }}
-                />
-                <span>
-                  I consent to T-Shots collecting my Vitality Score quiz
-                  answers and email address to generate and email me a
-                  personalized result, and to save it so it can be linked if I
-                  later create a T-Shots account with this same email. I can
-                  withdraw consent and request deletion at any time. See the{' '}
-                  <a href="/privacy" target="_blank" rel="noreferrer">
-                    Consumer Health Data Privacy Notice
-                  </a>{' '}
-                  and{' '}
-                  <a href="/terms" target="_blank" rel="noreferrer">
-                    Terms of Use
-                  </a>
-                  .
-                </span>
-              </label>
-
-              {error ? <p className="error-text">{error}</p> : null}
-
-              <div className="quiz-footer">
-                <button
-                  className="secondary-button"
-                  onClick={handleBack}
-                  type="button"
-                >
-                  Back
-                </button>
-                <button
-                  className="primary-button"
-                  disabled={submitting || !consent}
-                  onClick={handleSubmit}
-                  type="button"
-                >
-                  {submitting ? 'Saving...' : 'Email my score'}
-                  <ArrowRight size={18} />
-                </button>
               </div>
             </div>
           </div>
@@ -268,22 +296,75 @@ export default function VitalityScoreFunnel() {
 
       {stage === 'result' && result ? (
         <section className="center-stage">
-          <div className="stage-card result-card">
-            <p className="stage-eyebrow">Score saved</p>
-            <h2>Your Vitality Score</h2>
-            <div className="result-score" style={{ color: result.band.color }}>
-              {result.totalScore}
-            </div>
-            <p className="result-band">
-              {result.band.label}
-              <span>{result.band.rangeLabel}</span>
+          <div className="stage-card result-card fade-up-panel" key="result-panel">
+            <p className="stage-eyebrow">
+              {result.emailDelivery.success ? 'Email sent' : 'Email issue'}
             </p>
+            <h2>
+              {result.emailDelivery.success
+                ? 'Open T-Shots to view your Vitality Score'
+                : 'We saved your Vitality Score'}
+            </h2>
             <p className="stage-body">
-              This result has been saved and emailed to{' '}
-              <strong>{result.email}</strong>. If this same email is used to
-              create a brand-new T-Shots account, Rayhawk can attach this
-              pre-signup score during onboarding.
+              {result.emailDelivery.success ? (
+                <>
+                  We sent the app link to <strong>{result.email}</strong>.
+                  Register in T-Shots with this same email address to view the
+                  Vitality Score you just saved.
+                </>
+              ) : (
+                <>
+                  We saved your Vitality Score, but we couldn&apos;t send the
+                  app link to <strong>{result.email}</strong>. Please contact{' '}
+                  <a className="support-link" href={`mailto:${supportEmail}`}>
+                    {supportEmail}
+                  </a>{' '}
+                  and register in T-Shots with this same email address to view
+                  the score you just saved.
+                </>
+              )}
             </p>
+
+            <div className="result-download-block">
+              <div className="result-phone-shell">
+                <PhoneShowcase
+                  className="phone-showcase-result"
+                  sizes="(max-width: 720px) 210px, (max-width: 1080px) 220px, 240px"
+                />
+              </div>
+
+              <div className="store-badge-links">
+                <a
+                  aria-label="App Store link coming soon"
+                  className="store-badge-link"
+                  href=""
+                  onClick={(event) => event.preventDefault()}
+                >
+                  <Image
+                    alt="Download on the App Store"
+                    className="store-badge-image store-badge-image-apple"
+                    height={60}
+                    src="/images/store-badges/app-store-badge.svg"
+                    width={180}
+                  />
+                </a>
+
+                <a
+                  aria-label="Google Play link coming soon"
+                  className="store-badge-link"
+                  href=""
+                  onClick={(event) => event.preventDefault()}
+                >
+                  <Image
+                    alt="Get it on Google Play"
+                    className="store-badge-image store-badge-image-google"
+                    height={60}
+                    src="/images/store-badges/google-play-badge.png"
+                    width={180}
+                  />
+                </a>
+              </div>
+            </div>
 
             <div className="result-actions">
               <button

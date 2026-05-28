@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
+import LegalDocument from '@/components/LegalDocument';
+
 export const metadata: Metadata = {
   title: 'Terms of Use | Vitality Score',
   description:
@@ -9,17 +11,51 @@ export const metadata: Metadata = {
 
 const LAST_UPDATED = 'May 14, 2026';
 
+const FACTS = [
+  {
+    label: 'Who can use it',
+    value: 'Adults 18 and older using the Vitality Score site and quiz for themselves.',
+  },
+  {
+    label: 'Important limitation',
+    value:
+      'The Vitality Score is educational only and is not medical advice, diagnosis, or treatment.',
+  },
+  {
+    label: 'Legal framework',
+    value:
+      'Covers site use, acceptable conduct, intellectual property, liability, and dispute resolution.',
+  },
+];
+
+const TABLE_OF_CONTENTS = [
+  { href: '#acceptance', label: 'Acceptance' },
+  { href: '#medical', label: 'No medical advice' },
+  { href: '#data', label: 'Data handling' },
+  { href: '#acceptable-use', label: 'Acceptable use' },
+  { href: '#liability', label: 'Liability' },
+  { href: '#disputes', label: 'Disputes' },
+  { href: '#contact', label: 'Contact' },
+];
+
+const FOOTER_LINKS = [
+  { href: '/', label: 'Return to Vitality Score' },
+  { href: '/privacy', label: 'Privacy Policy' },
+];
+
 export default function TermsPage() {
   return (
-    <main className="legal-shell">
-      <article className="legal-article">
-        <header className="legal-header">
-          <p className="legal-eyebrow">Vitality Score</p>
-          <h1>Terms of Use</h1>
-          <p className="legal-meta">Last updated: {LAST_UPDATED}</p>
-        </header>
-
-        <section className="legal-section">
+    <LegalDocument
+      accent="terms"
+      description="Terms governing access to the Vitality Score quiz, including eligibility, acceptable use, disclaimers, limitations of liability, and dispute resolution."
+      eyebrow="Vitality Score terms"
+      facts={FACTS}
+      footerLinks={FOOTER_LINKS}
+      lastUpdated={LAST_UPDATED}
+      title="Terms of Use"
+      toc={TABLE_OF_CONTENTS}
+    >
+        <section className="legal-section" id="acceptance">
           <h2>1. Acceptance of these Terms</h2>
           <p>
             These Terms of Use (&ldquo;Terms&rdquo;) govern your access to and
@@ -32,7 +68,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section" id="eligibility">
           <h2>2. Eligibility</h2>
           <p>
             You must be at least 18 years old to use the Site. By using the
@@ -41,7 +77,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section legal-section--featured" id="medical">
           <h2>3. The Site is not medical advice</h2>
           <p>
             The Vitality Score is a wellness self-assessment intended for
@@ -59,7 +95,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section" id="data">
           <h2>4. How we handle your data</h2>
           <p>
             Our collection and use of the information you submit, including the
@@ -71,7 +107,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section" id="acceptable-use">
           <h2>5. Acceptable use</h2>
           <p>You agree not to:</p>
           <ul>
@@ -98,7 +134,7 @@ export default function TermsPage() {
           </ul>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section" id="intellectual-property">
           <h2>6. Intellectual property</h2>
           <p>
             The Site, the Vitality Score name and rubric, the design of the
@@ -110,7 +146,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section" id="warranties">
           <h2>7. Disclaimer of warranties</h2>
           <p>
             THE SITE IS PROVIDED &ldquo;AS IS&rdquo; AND &ldquo;AS
@@ -125,7 +161,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section" id="liability">
           <h2>8. Limitation of liability</h2>
           <p>
             TO THE FULLEST EXTENT PERMITTED BY LAW, T-SHOTS AND ITS AFFILIATES,
@@ -145,7 +181,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section" id="indemnification">
           <h2>9. Indemnification</h2>
           <p>
             You agree to defend, indemnify, and hold harmless T-Shots and its
@@ -157,7 +193,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section" id="termination">
           <h2>10. Termination</h2>
           <p>
             We may suspend or terminate your access to the Site at any time,
@@ -167,7 +203,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section legal-section--featured" id="disputes">
           <h2>11. Dispute resolution and arbitration</h2>
           <p>
             <strong>Please read this Section carefully.</strong> Any dispute
@@ -188,7 +224,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section" id="governing-law">
           <h2>12. Governing law</h2>
           <p>
             These Terms are governed by the laws of the State of California,
@@ -198,7 +234,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section" id="changes">
           <h2>13. Changes to these Terms</h2>
           <p>
             We may update these Terms from time to time. We will indicate the
@@ -208,7 +244,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <section className="legal-section">
+        <section className="legal-section" id="contact">
           <h2>14. Contact</h2>
           <p>
             <strong>T-Shots &mdash; Legal Team</strong>
@@ -221,12 +257,6 @@ export default function TermsPage() {
             <a href="mailto:team@drvigor.com">team@drvigor.com</a>
           </p>
         </section>
-
-        <footer className="legal-footer">
-          <Link href="/">Return to Vitality Score</Link>
-          <Link href="/privacy">Privacy Policy</Link>
-        </footer>
-      </article>
-    </main>
+    </LegalDocument>
   );
 }
