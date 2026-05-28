@@ -10,7 +10,13 @@
   --muted: #6b7280;
   --border: rgba(31, 41, 55, 0.1);
   --shadow: 0 28px 84px rgba(48, 38, 24, 0.14);
-  font-family: "Avenir Next", "Inter", "Segoe UI", sans-serif;
+  --font-display:
+    var(--font-display, "Fraunces"), "Iowan Old Style", "Charter",
+    "Source Serif Pro", Cambria, Georgia, serif;
+  --font-body:
+    var(--font-body, "Inter"), -apple-system, BlinkMacSystemFont, "Segoe UI",
+    system-ui, sans-serif;
+  font-family: var(--font-body);
 }
 
 * {
@@ -49,40 +55,82 @@ button {
   position: relative;
 }
 
-.desktop-utility-nav {
+.site-header {
   position: fixed;
-  top: 24px;
-  right: 24px;
-  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px clamp(20px, 4vw, 40px);
+  background: rgba(255, 253, 249, 0.86);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-.desktop-signin-link {
+.site-header--legal {
+  position: sticky;
+  top: 0;
+}
+
+.site-header-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.site-header-monogram {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 0 18px;
-  border-radius: 999px;
-  border: 1px solid rgba(14, 165, 233, 0.18);
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 16px 38px rgba(15, 23, 42, 0.1);
-  backdrop-filter: blur(14px);
-  color: var(--text);
-  text-decoration: none;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  transition:
-    transform 180ms ease,
-    border-color 180ms ease,
-    box-shadow 180ms ease;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background: var(--brand-blue-deep);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.86rem;
+  letter-spacing: 0.06em;
 }
 
-.desktop-signin-link:hover {
-  transform: translateY(-1px);
-  border-color: rgba(14, 165, 233, 0.32);
-  box-shadow: 0 18px 42px rgba(14, 165, 233, 0.16);
+.site-header-tag {
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.brand-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.18em;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.brand-wordmark-text {
+  display: inline-block;
+}
+
+.brand-wordmark-tm {
+  font-family: var(--font-body);
+  font-size: 0.42em;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  color: var(--brand-blue-deep);
+  transform: translateY(-0.5em);
+  display: inline-block;
 }
 
 .hero-panel,
@@ -91,6 +139,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 72px;
 }
 
 .hero-panel {
@@ -826,7 +875,7 @@ button {
 }
 
 @media (max-width: 900px) {
-  .desktop-utility-nav {
+  .site-header-tag {
     display: none;
   }
 
@@ -952,9 +1001,15 @@ body:has(.legal-shell) {
   min-height: 100svh;
   padding: 48px 24px 96px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   position: relative;
   overflow: clip;
+}
+
+.legal-shell .site-header--legal {
+  width: 100%;
+  margin-bottom: 32px;
 }
 
 .legal-shell::before,

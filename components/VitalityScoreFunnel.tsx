@@ -22,14 +22,6 @@ type FunnelStage = 'landing' | 'assessment' | 'capture' | 'result';
 
 export default function VitalityScoreFunnel() {
   const supportEmail = 'support@t-shots.com';
-  const signInHref = useMemo(() => {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_TSHOTS_WEB_URL?.trim() || 'https://t-shots.com';
-    const normalizedBaseUrl = baseUrl.replace(/\/$/, '');
-    const url = new URL('/login', `${normalizedBaseUrl}/`);
-    url.searchParams.set('returnTo', '/t-log?logType=vitality');
-    return url.toString();
-  }, []);
   const [stage, setStage] = useState<FunnelStage>('landing');
   const [categoryIndex, setCategoryIndex] = useState(0);
   const [scores, setScores] = useState<ScoreMap>(buildEmptyScores);
@@ -124,11 +116,20 @@ export default function VitalityScoreFunnel() {
 
   return (
     <main className="page-shell">
-      <div className="desktop-utility-nav">
-        <a className="desktop-signin-link" href={signInHref}>
-          Sign In
+      <header className="site-header" aria-label="Vitality Score">
+        <a className="site-header-brand" href="/">
+          <span className="site-header-monogram" aria-hidden>
+            VS
+          </span>
+          <span className="brand-wordmark">
+            <span className="brand-wordmark-text">Vitality Score</span>
+            <span className="brand-wordmark-tm" aria-hidden>
+              &trade;
+            </span>
+          </span>
         </a>
-      </div>
+        <span className="site-header-tag">A T-Shots self-assessment</span>
+      </header>
 
       {stage === 'landing' ? (
         <section className="hero-panel">
