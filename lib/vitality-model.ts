@@ -501,7 +501,7 @@ export const getDescriptorText = (
   metric: MetricDefinition,
   value: number | null,
 ) => {
-  if (value === null) return 'Set your score from 0 to 10.';
+  if (value === null) return '';
   if (value === 0) return metric.low.anchor;
   if (value === 10) return metric.high.anchor;
   return metric.selectedDescriptors[value] ?? `${value} / 10`;

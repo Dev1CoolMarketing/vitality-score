@@ -1,24 +1,31 @@
 import type { Metadata } from 'next';
-import { Fraunces, Inter } from 'next/font/google';
+import { Noto_Sans, Noto_Sans_Mono, Noto_Serif } from 'next/font/google';
 import './globals.css';
 
-const display = Fraunces({
+const display = Noto_Serif({
   subsets: ['latin'],
   display: 'swap',
-  axes: ['SOFT'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-display',
 });
 
-const body = Inter({
+const body = Noto_Sans({
   subsets: ['latin'],
   display: 'swap',
   weight: ['400', '500', '600', '700', '800'],
   variable: '--font-body',
 });
 
+const mono = Noto_Sans_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-mono',
+});
+
 export const metadata: Metadata = {
-  title: 'Vitality Score',
-  description: 'Find out your Vitality Score.',
+  title: 'Vitality Score™',
+  description: 'A T-SHOTS™ Self-Assessment.',
 };
 
 export default function RootLayout({
@@ -27,7 +34,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable}`}>
+    <html
+      lang="en"
+      className={`${display.variable} ${body.variable} ${mono.variable}`}
+    >
       <body>{children}</body>
     </html>
   );

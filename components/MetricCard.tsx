@@ -85,31 +85,18 @@ export default function MetricCard({
   return (
     <article className="metric-card">
       <div className="metric-card-header">
-        <div className="metric-card-label-row">
-          <p className="metric-label">{descriptor.label}</p>
-          <button
-            aria-label={`About ${descriptor.label}`}
-            className="metric-info-button"
-            onClick={onOpenInfo}
-            type="button"
-          >
-            <Info size={16} />
-          </button>
-        </div>
-        <span
-          className="metric-value-pill"
-          style={{
-            color: value === null ? '#64748B' : accentColor,
-            backgroundColor: value === null ? '#F8FAFC' : accentTint,
-          }}
+        <p className="metric-label">{descriptor.label}</p>
+        <button
+          aria-label={`About ${descriptor.label}`}
+          className="metric-info-button"
+          onClick={onOpenInfo}
+          type="button"
         >
-          {value === null && displayInteger === null
-            ? 'Not set'
-            : `${roundedActiveValue}/10`}
-        </span>
+          <Info size={16} />
+        </button>
       </div>
 
-      <div className="metric-slider-block">
+      <div className="metric-slider-row">
         <div className="metric-slider-shell" style={sliderStyle}>
           <div aria-hidden className="metric-slider-visual">
             <div className="metric-slider-fill" />
@@ -131,10 +118,19 @@ export default function MetricCard({
             value={activeRawValue}
           />
         </div>
-        <div className="metric-slider-scale">
-          <span>0</span>
-          <span>10</span>
-        </div>
+        <span
+          className="metric-value-pill"
+          style={{
+            color: value === null ? '#64748B' : accentColor,
+            backgroundColor: value === null ? '#F8FAFC' : accentTint,
+            borderColor:
+              value === null ? 'rgba(31, 41, 55, 0.08)' : accentColor,
+          }}
+        >
+          {value === null && displayInteger === null
+            ? '–'
+            : roundedActiveValue}
+        </span>
       </div>
 
       <div className="metric-descriptor">
