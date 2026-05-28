@@ -42,20 +42,15 @@ export default function LegalDocument({
 }: LegalDocumentProps) {
   return (
     <main className={`legal-shell legal-shell--${accent}`}>
-      <header className="site-header site-header--legal" aria-label="Vitality Score">
-        <Link className="site-header-brand" href="/">
-          <span className="site-header-monogram" aria-hidden>
-            VS
-          </span>
-          <span className="brand-wordmark">
-            <span className="brand-wordmark-text">Vitality Score</span>
-            <span className="brand-wordmark-tm" aria-hidden>
-              &trade;
-            </span>
-          </span>
-        </Link>
-        <span className="site-header-tag">A T-Shots self-assessment</span>
-      </header>
+      <nav aria-label="Primary">
+        <div className="wrap nav-in">
+          <Link className="brand" href="/">
+            <b>
+              Vitality Score<span className="tm">&trade;</span>
+            </b>
+          </Link>
+        </div>
+      </nav>
 
       <article className="legal-article fade-up-panel">
         <header className="legal-header">
